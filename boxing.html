@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>boxing</title>
+    <style type="text/css" media="all">
+    *{
+      padding: 0px;
+      margin: 0;
+      overflow: hidden
+    }
+    
+    body {
+      background: green;
+      text-align: center;
+      width: 100vw;
+      height: 100vh
+    }
+    .screen {
+      border: 2px solid black ;
+      margin: 10px auto
+    }
+    .btn {
+      margin: 5px;
+      width: 80px;
+      height: 80px;
+      border-radius:10px;
+      background: lightgreen
+    }
+    .btn:hover{
+      background: orange;
+      width: 82px;
+      height: 82px;
+    }
+    
+    .gop {
+      position: absolute;
+      background: rgba(0,0,0,.8);
+      width: 100vw;
+      height: 100vh;
+      top: 0px;
+      color: lightgrey;
+      display: none
+    }
+    .gop div {
+      width: 70vw;
+      height: auto;
+      margin: 25vh auto;
+      padding: 20px 0;
+      border: 5px solid grey;
+      border-radius: 20px;
+      font-size: 30px
+    }
+    .gop button {
+      width: 100px;
+      height: 50px;
+      background:lightgreen;
+      margin: 30px auto;
+       
+    }
+    </style>
+
+</head>
+
+<body>
+<canvas class="screen" width="300" height="300">
+  
+</canvas>
+
+<div class="controls">
+  <button class="btn left" onclick="left()">Left</button>
+  <button class="btn right" onclick="right()">Right</button>
+  <button class="btn punch" onclick="punch()">Punch</button>
+</div>
+
+<div class="gop">
+  <div>
+    <p class="winner"></p> 
+    <br>
+    <button onclick="replay()">Play again</button>
+  </div>
+</div>
+
+<script src="jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+$("html").toggle()
+$("html").toggle(1000)
+  const getScreen = document.querySelector(".screen")
+  const screen = getScreen.getContext("2d");
+  
+  var img = new Image();
+  img.src = "p1.png"
+  
+  var img2 = new Image();
+  img2.src = "p2.png"
+  
+  var bg = new Image()
+  bg.src = "gameplan.jpg"
+  
+  pw = 60
+  p2w = 60
+  ph = 100
+  p2h = 100
+  p1x = 50
+  py = getScreen.height-100
+  p2x = getScreen.width-110
+  p2y = 300-ph
+  p1life = 100
+  p2life = 100
+  winner = "no winner yet";
+  
+  setInterval(function(){
+  screen.fillStyle = "rgba(150,150,150,.8)"
+  screen.drawImage(bg,0,0,300,300)
+  screen.fillRect(0,0,getScreen.width,getScreen.height)
+  screen.fillStyle = 'white';
+  screen.fillRect(0,15,100,20)
+  screen.fillRect(209,15,100,20)
+  
+  screen.fillStyle="red"
+  screen.fillRect(0,15,p1life,20)
+  screen.fillRect(getScreen.width-p2life,15,p2life,20)
+  
+  
+  screen.fillStyle = "Blue"
+  screen.font         = 'Bold 15px Sans-Serif';
+  screen.fillText("Supertron",10,10)
+  screen.fillText("Gameplan Bot",200,10)
+  screen.fillStyle = "orange"
+  screen.font         = 'Bold 30px Sans-Serif';
+  screen.fillText("Vs",140,30)
+  
+    // Draw boxing ring
+  screen.beginPath();
+  screen.strokeStyle = 'red';
+  screen.lineWidth = 10;
+  screen.lineCap = 'round';
+  
+  screen.moveTo(75, 200);
+  screen.lineTo(75, 250);
+  screen.moveTo(225, 200);
+  screen.lineTo(225, 250);
+  screen.stroke()
+  
+  screen.beginPath()
+  screen.lineWidth = 3
+  
+  screen.moveTo(75, 250);
+  screen.lineTo(225, 250);
+  screen.moveTo(75, 250);
+  screen.lineTo(0, 300);
+  screen.moveTo(225, 250);
+  screen.lineTo(300, 300);
+  screen.moveTo(75, 200);
+  screen.lineTo(0, 250);
+  screen.moveTo(75, 225);
+  screen.lineTo(0, 275);
+  screen.moveTo(225, 200);
+  screen.lineTo(300, 250);
+  screen.moveTo(225, 225);
+  screen.lineTo(300, 275);
+  screen.moveTo(75, 200);
+  screen.lineTo(225, 200);
+  screen.moveTo(75, 225);
+  screen.lineTo(225, 225);
+  screen.stroke();
+  
+  screen.beginPath()
+  screen.lineWidth = 100
+  screen.moveTo(150, 250);
+  screen.lineTo(150, 300);
+  
+  screen.stroke()
+  
+  
+  //drawing players
+  
+  screen.fillStyle="cyan"
+ screen.font         = 'Bold 15px Sans-Serif'; 
+screen.fillText("you",p1x+20,200)
+screen.drawImage(img,p1x,py,pw,ph)
+screen.drawImage(img2,p2x,p2y,p2w,p2h) 
+
+  },100)
+  
+  //controls
+  function left(){
+    if(p1x>0){
+      p1x-=10
+    }
+  }
+  
+  function right(){
+    if(p1x<p2x){
+      p1x+=10
+    }
+  }
+  
+  function punch(){
+    img.src = "p1f.png"
+    setTimeout(function (){
+      img.src = "p1.png"
+    },100)
+    if(p2x>=p1x+(pw/4) && p2x<=p1x+(0.75*pw)){
+      p2life-=5
+      p2x+=2
+      setTimeout(()=>{
+        p2x-=2
+      },200)
+    }
+  }
+  
+  //computer automoves
+  setInterval(function(){
+    if(p2x<=p1x+(pw/4)){
+      p2x+=3
+    }
+    if(p2x>p1x+(0.75*pw)){
+      p2x-=3
+    }
+  },500)
+  //auto punch
+  autopunch = setInterval(function(){
+    if(p2x>=p1x+(pw/4) && p2x<=p1x+(0.75*pw)){
+      img2.src = "p2f.png"
+      p1x-=2
+      p1life-=5
+      setTimeout(function(){
+        img2.src ="p2.png"
+        p1x+=2
+      },200)
+    }
+  },1000)
+  
+  //gameover check
+  setInterval(function(){
+    document.querySelector(".winner").innerHTML=winner
+    if(p1life<0){
+      setTimeout(function(){
+        //document.querySelector(".gop").style.display="block"
+        $(".gop").fadeIn(500);
+      },2000)
+      winner="Gameover<br> You lose"
+      img.src = "p1d.png"
+      ph = 40
+      pw = 100
+      p1x = 50
+      py = 300 - 30
+      btns = document.querySelectorAll(".btn");
+      btns.forEach((btn)=>{
+        btn.style.pointerEvents="none";
+      })
+      clearInterval (autopunch)
+    }
+    if(p2life<0){
+      setTimeout(function(){
+      //document.querySelector(".gop").style.display="block"
+      $(".gop").fadeIn(500)
+      },2000)
+      winner="Congratulation<br> You win!"
+      img2.src = "p2d.png"
+      p2h = 40
+      p2w = 100
+      p2x = 150
+      p2y = 300-30
+      clearInterval(autopunch)
+    }
+    
+  },100)
+  
+  //replay
+  function replay(){
+    location.reload()
+  }
+  
+</script>
+</body>
+
+</html>
